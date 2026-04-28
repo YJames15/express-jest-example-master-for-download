@@ -1,0 +1,27 @@
+# .github/workflows/nodejs.yml
+name: Node.js CI for express-jest-example
+
+# 触发条件：推/拉取请求到 main/master 分支时执行
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+# 定义作业：Ubuntu 环境运行
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 拉取仓库代码到 CI 环境
+      - uses: actions/checkout@v4
+      # 配置 Node.js 环境（适配项目的版本，优先看 package.json 的 engines 字段）
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x # 若项目要求 20.x/16.x，可修改
+          cache: 'npm' # 缓存依赖，加速构建
+      # 安装项目依赖（npm ci 更严格，适配 lock 文件）
+      - name: Install dependencies
+        run: npm ci
